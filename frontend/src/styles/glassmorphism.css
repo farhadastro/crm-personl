@@ -1,0 +1,30 @@
+/* glassmorphism.css */
+:root {
+  --bg-dark: #0a0a1a;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  margin: 0;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+pre, code {
+  font-family: 'JetBrains Mono', monospace;
+}
