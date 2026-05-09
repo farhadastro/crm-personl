@@ -5,15 +5,16 @@ from app.schemas import project
 
 router = APIRouter()
 
-@router.get("/projects")
+@router.get("/", response_model=list[project.Project])
 def get_projects(db: Session = Depends(session.get_db)):
     return db.query(models.Project).all()
 
-@router.patch("/projects/{project_id}/status")
-def update_project_status(project_id: int, status: str, db: Session = Depends(session.get_db)):
-    project = db.query(models.Project).filter(models.Project.id == project_id).first()
-    if not project:
+@router.patch("/{project_id}/status")
+def update_project_status(project_id: int, status_update: project.ProjectStatusUpdate, db: Session = Depends(session.get_db)):
+    db_project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")
-    project.status = status
+    db_project.status = status_update.status
     db.commit()
-    return {"message": "Status updated"}
+    db.refresh(db_project)
+    return db_project
