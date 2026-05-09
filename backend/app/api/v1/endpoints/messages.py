@@ -1,17 +1,19 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db import models, session
+from typing import List
 
 router = APIRouter()
 
-@router.get("/projects/{project_id}/messages")
-def get_messages(project_id: int, db: Session = Depends(session.get_db)):
+@router.get("/{project_id}", response_model=List[dict])
+def get_project_messages(project_id: int, db: Session = Depends(session.get_db)):
     return db.query(models.Message).filter(models.Message.project_id == project_id).all()
 
-@router.post("/projects/{project_id}/messages")
-def send_message(project_id: int, content: str, db: Session = Depends(session.get_db)):
-    # Note: sender_id would be retrieved from JWT in real implementation
-    msg = models.Message(project_id=project_id, sender_id=1, content=content)
-    db.add(msg)
+@router.post("/{project_id}", response_model=dict)
+def create_project_message(project_id: int, content: str, db: Session = Depends(session.get_db)):
+    # Assuming user_id 1 for demo purposes until auth integrated
+    new_message = models.Message(project_id=project_id, sender_id=1, content=content)
+    db.add(new_message)
     db.commit()
-    return {"message": "Sent"}
+    db.refresh(new_message)
+    return {"message": "Created", "id": new_message.id}

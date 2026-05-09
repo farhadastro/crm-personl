@@ -1,9 +1,6 @@
 from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
-
-class ProjectStatusUpdate(BaseModel):
-    status: str
+from datetime import datetime
 
 class ProjectBase(BaseModel):
     name: str
@@ -11,6 +8,9 @@ class ProjectBase(BaseModel):
 
 class ProjectCreate(ProjectBase):
     pass
+
+class ProjectStatusUpdate(BaseModel):
+    status: str
 
 class Project(ProjectBase):
     id: int
